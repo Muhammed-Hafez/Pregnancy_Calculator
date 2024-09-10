@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pregnancy Calculator</title>
+    <style>
+      body {
+        font-family: "Arial", sans-serif;
+        width: 640px;
+        margin: auto;
+      }
+      .container {
+        border-radius: 15px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        margin: auto;
+        text-align: center;
+        width: 500px;
+        background-color: #0f836f;
+        padding-bottom: 20px;
+      }
+
+      .image-container img {
+        width: 100%;
+        border-radius: 10px;
+        margin-top: -2rem;
+      }
+      h1 {
+        color: aliceblue;
+        font-size: 2rem;
+        padding: 1rem;
+        font-family: "Bodoni 72", serif;
+      }
+      label {
+        font-size: 1.2em;
+        margin-bottom: 10px;
+        display: block;
+        color: aliceblue;
+      }
+      input[type="date"] {
+        width: 90%;
+        padding: 15px;
+        font-size: 1.2em;
+        border: 2px solid #ccc;
+        border-radius: 10px;
+        margin-bottom: 10px;
+        box-sizing: border-box;
+      }
+
+      .button-calc {
+        display: flex;
+        justify-content: center;
+      }
+
+      .button-calc img {
+        width: 48px;
+        background-color: #e69f1c;
+        border: none;
+        border-bottom-left-radius: 10px;
+      }
+
+      button {
+        background-color: #e69f1c;
+        color: #0f836f;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        font-size: 2rem;
+        font-weight: 1000;
+        font-family: "Bodoni 72", serif;
+        border-bottom-right-radius: 10px;
+        padding-right: 15px;
+      }
+      button:hover {
+        background-color: #45a049;
+      }
+
+      .button-reset {
+        display: flex;
+        justify-content: center;
+        padding: 0.5rem;
+      }
+
+      .button-reset img {
+        width: 48px;
+        border: none;
+        border-bottom-left-radius: 10px;
+        background-color: #b23229;
+      }
+
+      .clear-button {
+        background-color: #ad2d24;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        font-size: 2rem;
+        font-weight: 1000;
+        font-family: "Bodoni 72", serif;
+        border-bottom-right-radius: 10px;
+        padding-right: 15px;
+      }
+      button.clear-button:hover {
+        background-color: #b32929;
+      }
+
+      .button-res {
+        display: flex;
+        justify-content: center;
+        padding-bottom: 0.5rem;
+      }
+
+      .button-res img {
+        width: 48px;
+        background-color: #e69f1c;
+        border: none;
+        border-top-left-radius: 10px;
+      }
+
+      h2 {
+        background-color: #e69f1c;
+        color: #0f836f;
+        border: none;
+        font-size: 2rem;
+        font-weight: 1000;
+        font-family: "Bodoni 72", serif;
+        border-top-right-radius: 10px;
+        padding-right: 15px;
+      }
+      p {
+        font-size: 1.2em;
+        color: #666;
+      }
+      .error {
+        color: red;
+        font-size: 1.2em;
+      }
+
+      .results {
+        padding: 1rem;
+      }
+
+      .resultsP {
+        border: 3px solid rgb(220, 158, 22);
+        border-radius: 15px;
+      }
+
+      .results p {
+        color: aliceblue;
+        font-family: "Arial", serif;
+        font-weight: bold;
+        text-align: center;
+      }
+
+      /* إخفاء النتائج وزر إعادة التعيين افتراضياً */
+      #results {
+        display: none;
+      }
+      #reset {
+        display: none;
+      }
+
+      footer {
+        padding: 90px;
+        padding-bottom: 0;
+      }
+
+      footer img {
+        width: 100%;
+        margin: auto;
+      }
+
+      @media (max-width: 600px) {
+        h1 {
+          font-size: 1.5rem;
+        }
+        input[type="date"],
+        button {
+        }
+        .image-container img {
+          width: 100%;
+          height: auto;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Pregnancy Calculator</h1>
+
+      <div class="image-container">
+        <img
+          id="image"
+          src="Pregnancy Calculator-07.png"
+          alt="Before entering date"
+        />
+      </div>
+
+      <label for="lastPeriod">Enter the first day of your last period:</label>
+
+      <input type="date" id="lastPeriod" name="lastPeriod" />
+      <div class="button-calc" id="button-calc">
+        <img src="Pregnancy Calculator-06.png" alt="icon" />
+        <button onclick="calculate()">Calculate</button>
+      </div>
+      <div class="results" id="results">
+        <div class="button-res">
+          <img src="Pregnancy Calculator-05.png" alt="icon" />
+          <button>Results</button>
+        </div>
+        <div class="resultsP">
+          <p id="week"></p>
+          <p id="dueDate"></p>
+          <p id="weight"></p>
+          <p id="height"></p>
+          <p id="error" class="error"></p>
+        </div>
+      </div>
+    </div>
+    <div class="button-reset" id="reset">
+      <img src="Pregnancy Calculator-04.png" alt="icon" />
+      <button class="clear-button" onclick="clearFields()">Reset</button>
+    </div>
+    <footer>
+      <img src="Pregnancy Calculator-03.png" alt="footer" />
+    </footer>
+
+    <script>
+      function calculate() {
+        const lastPeriodInput = document.getElementById("lastPeriod").value;
+        const lastPeriod = new Date(lastPeriodInput);
+        const today = new Date();
+        const errorMessage = document.getElementById("error");
+
+        // Clear any previous error messages
+        errorMessage.innerText = "";
+
+        // Check if the entered date is in the future
+        if (lastPeriod > today) {
+          errorMessage.innerText = "Error: The date cannot be in the future!";
+          return;
+        }
+
+        // حساب فرق الأيام والأسابيع
+        const timeDifference = today - lastPeriod;
+        const days = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+        const weeks = Math.floor(days / 7);
+
+        // توقع تاريخ الولادة (40 أسبوع)
+        const dueDate = new Date(lastPeriod);
+        dueDate.setDate(lastPeriod.getDate() + 280); // 280 يوم (40 أسبوع)
+
+        // تقدير الوزن والطول بناءً على عدد الأسابيع
+        let weight = "";
+        let height = "";
+
+        if (weeks >= 7 && weeks < 9) {
+          weight = "1 grams";
+          height = "4 cm";
+        } else if (weeks >= 9 && weeks < 11) {
+          weight = "5 grams";
+          height = "6 cm";
+        } else if (weeks >= 11 && weeks < 13) {
+          weight = "20 grams";
+          height = "9 cm";
+        } else if (weeks >= 13 && weeks < 15) {
+          weight = "60 grams";
+          height = "12 cm";
+        } else if (weeks >= 15 && weeks < 17) {
+          weight = "120 grams";
+          height = "16 cm";
+        } else if (weeks >= 17 && weeks < 19) {
+          weight = "220 grams";
+          height = "25 cm";
+        } else if (weeks >= 19 && weeks < 21) {
+          weight = "330 grams";
+          height = "25 cm";
+        } else if (weeks >= 21 && weeks < 23) {
+          weight = "460 grams";
+          height = "28 cm";
+        } else if (weeks >= 23 && weeks < 25) {
+          weight = "650 grams";
+          height = "30 cm";
+        } else if (weeks >= 25 && weeks < 27) {
+          weight = "850 grams";
+          height = "32 cm";
+        } else if (weeks >= 27 && weeks < 29) {
+          weight = "1100 grams";
+          height = "35 cm";
+        } else if (weeks >= 29 && weeks < 31) {
+          weight = "1420 grams";
+          height = "38 cm";
+        } else if (weeks >= 31 && weeks < 33) {
+          weight = "1750 grams";
+          height = "40 cm";
+        } else if (weeks >= 33 && weeks < 35) {
+          weight = "2080 grams";
+          height = "42 cm";
+        } else if (weeks >= 35 && weeks < 37) {
+          weight = "2420 grams";
+          height = "45 cm";
+        } else if (weeks >= 37 && weeks < 39) {
+          weight = "2900 grams";
+          height = "48 cm";
+        } else if (weeks >= 39 && weeks <= 40) {
+          weight = "3250 grams";
+          height = "50 cm";
+        } else if (weeks > 40) {
+          weight = "Pregnancy should have ended by now";
+          height = "";
+        } else {
+          weight = "Too early to predict weight";
+          height = "Too early to predict height";
+        }
+
+        // عرض النتائج وإظهار قسم النتائج وزر إعادة التعيين
+        document.getElementById("week").innerText = `You are in week: ${weeks}`;
+        document.getElementById(
+          "dueDate"
+        ).innerText = `Expected due date: ${dueDate.toDateString()}`;
+        document.getElementById(
+          "weight"
+        ).innerText = `Estimated baby weight: ${weight}`;
+        document.getElementById(
+          "height"
+        ).innerText = `Estimated baby height: ${height}`;
+
+        // إظهار النتائج وزر إعادة التعيين
+        document.getElementById("results").style.display = "block";
+        document.getElementById("reset").style.display = "flex";
+        document.getElementById("button-calc").style.display = "none";
+
+        // تغيير الصورة
+        document.getElementById("image").src = "Pregnancy Calculator-08.png";
+      }
+
+      function clearFields() {
+        // إعادة تعيين الحقول والنتائج
+        document.getElementById("lastPeriod").value = "";
+        document.getElementById("week").innerText = "";
+        document.getElementById("dueDate").innerText = "";
+        document.getElementById("weight").innerText = "";
+        document.getElementById("height").innerText = "";
+        document.getElementById("error").innerText = "";
+
+        // إخفاء النتائج وزر إعادة التعيين
+        document.getElementById("results").style.display = "none";
+        document.getElementById("reset").style.display = "none";
+        document.getElementById("button-calc").style.display = "flex";
+
+        // إعادة الصورة الأصلية
+        document.getElementById("image").src = "Pregnancy Calculator-07.png";
+      }
+    </script>
+  </body>
+</html>
